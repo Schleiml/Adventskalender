@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Adventskalender</title>
+</head>
+<body>
+    <div class="Gitter">
+        <button id="1">1</button>
+        <button id="2">2</button>
+        <button id="3">3</button>
+        <button id="4">4</button>
+        <button id="5">5</button>
+        <button id="6">6</button>
+        <button id="7">7</button>
+        <button id="8">8</button>
+        <button id="9">9</button>
+        <button id="10">10</button>
+        <button id="11">11</button>
+        <button id="12">12</button>
+        <button id="13">13</button>
+        <button id="14">14</button>
+        <button id="15">15</button>
+        <button id="16">16</button>
+        <button id="17">17</button>
+        <button id="18">18</button>
+        <button id="19">19</button>
+        <button id="20">20</button>
+        <button id="21">21</button>
+        <button id="22">22</button>
+        <button id="23">23</button>
+        <button id="24">24</button>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.Gitter button');
+        const container = document.querySelector('.Gitter');
+        const buttonSize = 100;
+        const gridSize = 6;
+        const cellWidth = container.offsetWidth / gridSize;
+        const cellHeight = container.offsetHeight / 4;
+
+        // Prüfe ob Positionen im localStorage gespeichert sind
+        const savedPositions = localStorage.getItem('buttonPositions');
+
+        if (savedPositions) {
+            // Lade gespeicherte Positionen
+            const positions = JSON.parse(savedPositions);
+            buttons.forEach((button, index) => {
+                button.style.left = positions[index].x + 'px';
+                button.style.top = positions[index].y + 'px';
+            });
+        } else {
+            // Generiere neue Positionen und speichere sie
+            const gridPositions = [];
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    gridPositions.push({ row, col });
+                }
+            }
+
+            // Mische die Grid-Positionen zufällig
+            for (let i = gridPositions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [gridPositions[i], gridPositions[j]] = [gridPositions[j], gridPositions[i]];
+            }
+
+            const positions = [];
+            buttons.forEach((button, index) => {
+                const pos = gridPositions[index];
+                const randomX = pos.col * cellWidth + Math.random() * (cellWidth - buttonSize);
+                const randomY = pos.row * cellHeight + Math.random() * (cellHeight - buttonSize);
+
+                button.style.left = randomX + 'px';
+                button.style.top = randomY + 'px';
+                positions.push({ x: randomX, y: randomY });
+            });
+
+            // Speichere Positionen im localStorage
+            localStorage.setItem('buttonPositions', JSON.stringify(positions));
+        }
+    </script>
+
+</body>
+</html>
